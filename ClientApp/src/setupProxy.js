@@ -12,6 +12,7 @@ const context = [
   '/api/Auth/login',
   '/api/Auth/current-user',
   '/api/Auth/logout',
+  '/api/Auth/signup',
 ];
 
 module.exports = function (app) {

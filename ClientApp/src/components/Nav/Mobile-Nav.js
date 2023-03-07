@@ -1,6 +1,8 @@
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import Logo from '..//Logo';
 import { useEffect, useState } from 'react';
+import AuthItems from './Auth-Items';
+import ProfileItems from './Profile-Items';
 
 const Mobilenav = ({
   authItems,
@@ -32,14 +34,16 @@ const Mobilenav = ({
       <div className='flex flex-col h-h90 justify-between'>
         <div>
           <ul className='xl:hidden flex flex-col gap-2 py-4'>{navItems}</ul>
-          {profileItems && (
-            <ul className='xl:hidden flex flex-col gap-2 py-4 border-t border-gray-200 border-dashed'>
-              {profileItems}
-            </ul>
-          )}
+
+          <ul className='xl:hidden flex flex-col gap-2 py-4 border-t border-gray-200 border-dashed'>
+            <ProfileItems
+              mobileNavHandler={mobileNavHandler}
+              mobileProfileHandler={mobileProfileHandler}
+            />
+          </ul>
         </div>
         <ul className='xl:hidden flex justify-center border-t border-gray-200 border-dashed p-4 items-center'>
-          {authItems}
+          <AuthItems mobileNavHandler={mobileNavHandler} />
         </ul>
       </div>
     </div>

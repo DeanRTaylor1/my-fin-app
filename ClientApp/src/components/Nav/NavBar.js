@@ -1,37 +1,20 @@
 import { Bars3Icon, UserCircleIcon } from '@heroicons/react/24/solid';
 import Logo from '../Logo';
 
-import uniqid from 'uniqid';
 import { useContext, useState } from 'react';
 //import ProfileMenu from './profile/profile-menu';
 import { NavLink } from 'react-router-dom';
 
 import Mobilenav from './Mobile-Nav';
 import { currentUserContext } from '../../hooks/UserContext';
+import AuthItems from './Auth-Items';
+import ProfileMenu from './Profile-Menu';
 
 const Navbar = () => {
   const { currentUser, setCurrentUser } = useContext(currentUserContext);
   console.log(currentUser);
   const [scale, setScale] = useState('scale-0');
   const [profileScale, setProfileScale] = useState('-right-96');
-  const authItems = [
-    !currentUser && { label: 'Sign in', href: '/auth/signin' },
-    currentUser && { label: 'Sign out', href: '/auth/signout' },
-  ]
-    .filter(Boolean)
-    .map(({ label, href }) => {
-      return (
-        <div
-          onClick={(e) => mobileNavHandler(e, 'button')}
-          className='navButton'
-          key={href}
-        >
-          <NavLink className='hover:text-white' to={href}>
-            {label}
-          </NavLink>
-        </div>
-      );
-    });
 
   const navItems = [
     currentUser && { label: 'Dashboard', href: '/dashboard' },
@@ -49,35 +32,6 @@ const Navbar = () => {
           onClick={(e) => mobileNavHandler(e, 'button')}
         >
           <NavLink className='navLink' to={href}>
-            {label}
-          </NavLink>
-        </li>
-      );
-    });
-
-  const profileItems = [
-    currentUser && { label: 'My Profile', href: '/user/profile' },
-    currentUser && { label: 'Regular Outgoings', href: '/outgoings' },
-    currentUser && { label: 'Daily expenses', href: '/expenses' },
-  ]
-    .filter(Boolean)
-    .map(({ label, href }) => {
-      return (
-        <li
-          className='navItem'
-          key={href}
-          onClick={(e) => {
-            mobileNavHandler(e, 'button');
-            mobileProfileHandler(e, 'button');
-          }}
-        >
-          <NavLink
-            key={uniqid()}
-            className='nav-link'
-            style={{ textDecoration: 'none' }}
-            to={href}
-          >
-            {' '}
             {label}
           </NavLink>
         </li>
@@ -120,18 +74,16 @@ const Navbar = () => {
           onClick={mobileProfileHandler}
         />
       )}
-      {/*currentUser && (
-                <ProfileMenu
-                    authItems={authItems}
-                    mobileProfileHandler={mobileProfileHandler}
-                    profileScale={profileScale}
-                    profileItems={profileItems}
-                    mobileNavHandler={mobileNavHandler}
-                />
-            )*/}
+      {currentUser && (
+        <ProfileMenu
+          mobileProfileHandler={mobileProfileHandler}
+          profileScale={profileScale}
+          mobileNavHandler={mobileNavHandler}
+        />
+      )}
       {!currentUser && (
         <ul className='xl:flex hidden justify-center border-t border-gray-200 border-dashed p-4 items-center'>
-          {authItems}
+          <AuthItems mobileNavHandler={mobileNavHandler} />
         </ul>
       )}
       <Bars3Icon
@@ -139,9 +91,7 @@ const Navbar = () => {
         onClick={mobileNavHandler}
       />
       <Mobilenav
-        authItems={authItems}
         navItems={navItems}
-        profileItems={profileItems}
         scale={scale}
         mobileNavHandler={mobileNavHandler}
         mobileProfileHandler={mobileProfileHandler}

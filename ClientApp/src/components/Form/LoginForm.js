@@ -9,9 +9,11 @@ import { currentUserContext } from '../../hooks/UserContext';
 
 const LoginForm = () => {
   const { currentUser, setCurrentUser } = useContext(currentUserContext);
+
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const setUserAndNavigate = (data) => {
     setCurrentUser(data);
     navigate('/');
@@ -110,12 +112,12 @@ const LoginForm = () => {
 
         <div className='flex font-light text-xs py-3 gap-2'>
           Don&apos;t use social media?
-          {/* <NavLink
-            className='font-bold text-xs text-blue-300'
+          <NavLink
+            className='navLink font-bold text-xs text-blue-300'
             to={'/auth/signup'}
           >
             Sign Up
-          </NavLink> */}
+          </NavLink>
         </div>
       </form>
     </div>

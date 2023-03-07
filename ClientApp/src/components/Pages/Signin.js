@@ -6,7 +6,7 @@ import Stripes from '../Design/Stripes';
 import { currentUserContext } from '../../hooks/UserContext';
 
 const Signin = () => {
-  const { currentUser, setCurrentUser } = useContext(currentUserContext);
+  const { currentUser } = useContext(currentUserContext);
   const [isLoading, setIsLoading] = useState(true);
   let navigate = useNavigate();
   useEffect(() => {

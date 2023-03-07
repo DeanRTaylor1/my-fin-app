@@ -1,6 +1,11 @@
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using my_fin_app.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var RDS_CONNECTION_STRING = builder.Configuration["RDS:CONNECTIONSTRING"];
+var MONGO_URL = builder.Configuration["MONGO_URL"];
 
 // Add services to the container.
 builder.Services.AddAuthentication("cookie").AddCookie("cookie");
@@ -9,6 +14,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("user", policy => policy.RequireClaim(ClaimTypes.Email));
 });
 builder.Services.AddControllersWithViews();
+
+//Add dbcontext
+builder.Services.AddDbContext<DeanrtaylorfinanceContext>(options => options.UseNpgsql(RDS_CONNECTION_STRING));
 
 // Add CORS service
 

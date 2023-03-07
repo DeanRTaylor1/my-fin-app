@@ -7,7 +7,7 @@ const Formerrors = ({ errors }) => {
     <Fragment>
       <span className='flex flex-col gap-1'>
         {!errors && <FormLogo color={'text-blue-400'} />}
-        {errors && (
+        {!!errors && (
           <ul className='border p-2 rounded-md border-red-400 text-red-400 font-bold text-sm'>
             {' '}
             Ooops...{' '}

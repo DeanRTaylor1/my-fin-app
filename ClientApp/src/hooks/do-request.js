@@ -9,7 +9,7 @@ const DoRequest = ({ url, method, body, onSuccess }) => {
       console.log({ ...body, ...props });
       setErrors(null);
       const response = await axios[method](url, { ...body }, { ...props });
-      console.log(response);
+      console.log(onSuccess);
       if (onSuccess) {
         onSuccess(response.data);
       }
