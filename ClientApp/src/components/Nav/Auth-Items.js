@@ -12,15 +12,15 @@ const AuthItems = ({ mobileNavHandler }) => {
     .filter(Boolean)
     .map(({ label, href }) => {
       return (
-        <div
-          onClick={(e) => mobileNavHandler(e, 'button')}
-          className='navButton'
-          key={href}
-        >
-          <NavLink className='hover:text-white' to={href}>
+        <NavLink className='hover:text-white' to={href}>
+          <div
+            onClick={(e) => mobileNavHandler(e, 'button')}
+            className='navButton'
+            key={href}
+          >
             {label}
-          </NavLink>
-        </div>
+          </div>
+        </NavLink>
       );
     });
 

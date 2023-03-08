@@ -7,7 +7,7 @@ const ProfileItems = ({ mobileNavHandler, mobileProfileHandler }) => {
   const { currentUser } = useContext(currentUserContext);
 
   const Items = [
-    currentUser && { label: 'My Profile', href: '/user/profile' },
+    currentUser && { label: 'My Profile', href: '/profile' },
     currentUser && { label: 'Regular Outgoings', href: '/outgoings' },
     currentUser && { label: 'Daily expenses', href: '/expenses' },
   ]

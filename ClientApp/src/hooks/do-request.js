@@ -19,7 +19,13 @@ const DoRequest = ({ url, method, body, onSuccess }) => {
       // if (err.response.status === 429) {
       //   return setErrors(['Too many requests, please try again later']);
       // }
-      setErrors(err.response.data.errors.map((err) => err.message));
+      if (err.response.data.errors) {
+        let vals = Object.values(err.response.data.errors);
+        let errors = vals.reduce((acc, val) => acc.concat(val), []);
+        console.log(vals, errors);
+        return setErrors(errors);
+      }
+      setErrors([err.response.data]);
     }
   };
 

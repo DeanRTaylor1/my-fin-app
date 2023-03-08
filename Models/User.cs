@@ -33,5 +33,25 @@ public partial class User
 
     public virtual ICollection<Expense> Expenses { get; } = new List<Expense>();
 
-    public virtual ICollection<FixedOutgoingsMonthly> FixedOutgoingsMonthlies { get; } = new List<FixedOutgoingsMonthly>();
+    public virtual ICollection<FixedOutgoingsMonthly> FixedOutgoingsMonthlies { get; } =
+        new List<FixedOutgoingsMonthly>();
+}
+
+public class UserDto
+{
+    public string? Email { get; set; }
+
+    public int MonthlySalary { get; set; }
+
+    public string Username { get; set; } = null!;
+
+    public string? Currency { get; set; }
+
+    public string? Phone { get; set; }
+
+    public int? SavingsTarget { get; set; }
+
+    public int? SavingsRate { get; set; }
+
+    public int? CurrentSavings { get; set; }
 }

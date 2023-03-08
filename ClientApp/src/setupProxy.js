@@ -13,6 +13,7 @@ const context = [
   '/api/Auth/current-user',
   '/api/Auth/logout',
   '/api/Auth/signup',
+  '/api/Finance',
 ];
 
 module.exports = function (app) {

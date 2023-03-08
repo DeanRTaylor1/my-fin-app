@@ -5,7 +5,7 @@ const FormLogo = ({ color }) => {
 
   return (
     <div className={logoStyle}>
-      <NavLink href='/'>MyFin</NavLink>
+      <NavLink to='/'>MyFin</NavLink>
     </div>
   );
 };

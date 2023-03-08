@@ -1,6 +1,7 @@
 import { Counter } from './components/Counter';
 import { FetchData } from './components/FetchData';
 import Home from './components/Home';
+import Profile from './components/Pages/Profile';
 import Signin from './components/Pages/Signin';
 import SignOut from './components/Pages/Signout';
 import Signup from './components/Pages/Signup';
@@ -29,6 +30,10 @@ const AppRoutes = [
   {
     path: '/auth/signup',
     element: <Signup />,
+  },
+  {
+    path: '/profile',
+    element: <Profile />,
   },
 ];
 

@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using my_fin_app.Models;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +17,18 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddControllersWithViews();
 
+//Add FluentValidation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<MongoUserModelValidator>();
+
 //Add dbcontext
-builder.Services.AddDbContext<DeanrtaylorfinanceContext>(options => options.UseNpgsql(RDS_CONNECTION_STRING));
+builder.Services.AddDbContext<DeanrtaylorfinanceContext>(
+    options => options.UseNpgsql(RDS_CONNECTION_STRING)
+);
+
+//Add proxy for postgres
+builder.Services.AddTransient<IFinanceUserService, FinanceUserService>();
+builder.Services.AddTransient<IFinanceService, FinanceService>();
 
 // Add CORS service
 

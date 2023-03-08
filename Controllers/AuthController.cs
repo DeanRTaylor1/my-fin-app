@@ -14,8 +14,22 @@ namespace my_fin_app.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IFinanceUserService _financeUserService;
+        private readonly MongoUserModelValidator _validator;
+
+        //Add the Service which serves as a proxy to the postgres database,
+        //This is registered in Program.cs under Addtransient
+        public AuthController(
+            IFinanceUserService financeUserService,
+            MongoUserModelValidator validator
+        )
+        {
+            _validator = validator;
+            _financeUserService = financeUserService;
+        }
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginModel user)
+        public async Task<IActionResult> Login([FromBody] UserLoginModel user)
         {
             var exisitingUser = MongoUserModel.findUser(user.email);
             if (exisitingUser == null)
@@ -24,7 +38,7 @@ namespace my_fin_app.Controllers
             }
             if (!Password.Compare(exisitingUser[0].password, user.password))
             {
-                return BadRequest();
+                return BadRequest("Invalid credentials");
             }
 
             setUserCookie(exisitingUser[0]);
@@ -53,17 +67,30 @@ namespace my_fin_app.Controllers
         [HttpPost("signup")]
         public async Task<ActionResult<UserModelDTO>> Signup(UserModel user)
         {
+            var validationResult = await _validator.ValidateAsync(user);
+            Console.WriteLine($"validation:  {validationResult}");
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors
+                    .Select(e => new { message = e.ErrorMessage })
+                    .ToArray();
+                Console.WriteLine(errors);
+                return BadRequest(errors);
+            }
             var existingUser = MongoUserModel.findUser(user.email);
             if (existingUser.Count() > 0)
             {
                 Console.WriteLine(existingUser.Count());
-                return BadRequest();
+                return BadRequest("User already exists");
             }
+
+            //Hash password before saving to db
             var HashedPassword = Password.ToHash(user.password);
             var NewUser = new UserModel(user.username, HashedPassword, user.email);
-
             MongoUserModel.Add(NewUser);
-
+            User financeUser = new User { Username = NewUser.username, Email = NewUser.email };
+            _financeUserService.Add(financeUser);
+            //Assign login cookie on successful signup
             setUserCookie(NewUser);
 
             return CreatedAtAction(
@@ -88,5 +115,26 @@ namespace my_fin_app.Controllers
             await HttpContext.SignInAsync("cookie", userSession);
             return;
         }
+    }
+}
+
+public interface IFinanceUserService
+{
+    void Add(User user);
+}
+
+public class FinanceUserService : IFinanceUserService
+{
+    private readonly DeanrtaylorfinanceContext _context;
+
+    public FinanceUserService(DeanrtaylorfinanceContext context)
+    {
+        _context = context;
+    }
+
+    public void Add(User user)
+    {
+        _context.Users.Add(user);
+        _context.SaveChanges();
     }
 }
