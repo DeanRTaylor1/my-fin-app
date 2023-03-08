@@ -23,7 +23,14 @@ namespace my_fin_app.Controllers
         {
             Console.WriteLine(email, page);
             var outgoings = _context.FindAllOutgoings(email, page);
-            return outgoings;
+            foreach (var outgoing in outgoings)
+            {
+                Console.WriteLine(outgoing.Item);
+            }
+
+            return outgoings.FirstOrDefault() == null
+                ? new List<FixedOutgoingsMonthly>()
+                : outgoings;
         }
 
         // GET api/<FinanceUserController>/5
@@ -59,6 +66,15 @@ namespace my_fin_app.Controllers
 
             return user;
         }
+
+        [HttpPost("outgoings")]
+        [Authorize(Policy = "user")]
+        public ActionResult<UserDto> Post([FromBody] AddOutgoingModel data)
+        {
+            _context.AddOutgoing(data);
+
+            return Ok("Outoings added successfully");
+        }
     }
 }
 
@@ -66,6 +82,7 @@ public interface IFinanceService
 {
     UserDto Find(String email);
     UserDto Update(UpdateUserModel user);
+    void AddOutgoing(AddOutgoingModel outgoing);
     UserDto UserToDTO(User user);
     List<FixedOutgoingsMonthly> FindAllOutgoings(String email, int page);
 }
@@ -77,6 +94,22 @@ public class FinanceService : IFinanceService
     public FinanceService(DeanrtaylorfinanceContext context)
     {
         _context = context;
+    }
+
+    public void AddOutgoing(AddOutgoingModel outgoing)
+    {
+        var userId = _context.Users.Where(u => u.Email == outgoing.email).First().Id;
+        var newOutgoing = new FixedOutgoingsMonthly
+        {
+            UserId = userId,
+            Item = outgoing.item,
+            Tag = outgoing.tag,
+            Cost = (int)(outgoing.cost),
+            Currency = outgoing.currency,
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.FixedOutgoingsMonthlies.Add(newOutgoing);
+        _context.SaveChanges();
     }
 
     public UserDto Find(String email)
@@ -133,7 +166,11 @@ public class FinanceService : IFinanceService
             .Skip(skip)
             .Take(10)
             .ToList();
-
+        Console.WriteLine($"outgoings {outgoings}");
+        foreach (var outgoing in outgoings)
+        {
+            Console.WriteLine(outgoing.Item);
+        }
         return outgoings;
     }
 }

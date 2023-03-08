@@ -13,7 +13,7 @@ import AddItemForm from './add-item-form';
 const OutgoingsBody = () => {
   const { currentUser } = useContext(currentUserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [userOutgoings, setUserOutgoings] = useState([{}]);
+  const [userOutgoings, setUserOutgoings] = useState([]);
   const [modalActive, setModalActive] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -84,6 +84,7 @@ const OutgoingsBody = () => {
                   <TableHead />
                   <tbody className='divide-y divide-gray-200 font-medium'>
                     {!isLoading &&
+                      userOutgoings.length > 0 &&
                       userOutgoings.map((outgoing, index) => {
                         return (
                           <TableRow
@@ -94,6 +95,16 @@ const OutgoingsBody = () => {
                           />
                         );
                       })}
+                    {!isLoading && userOutgoings.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className='px-4 py-2 text-xs md:text-sm font-extralight md:font-bold text-gray-800 whitespace-normal text-center'
+                        >
+                          Add some Items!
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
                 {isLoading && (
