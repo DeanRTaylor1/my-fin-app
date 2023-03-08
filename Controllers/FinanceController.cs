@@ -18,10 +18,12 @@ namespace my_fin_app.Controllers
         }
 
         // GET: api/<FinanceUserController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("outgoings/{email}/{page}")]
+        public List<FixedOutgoingsMonthly> GetAllOutgoings([FromRoute] String email, int page)
         {
-            return new string[] { "value1", "value2" };
+            Console.WriteLine(email, page);
+            var outgoings = _context.FindAllOutgoings(email, page);
+            return outgoings;
         }
 
         // GET api/<FinanceUserController>/5
@@ -32,8 +34,8 @@ namespace my_fin_app.Controllers
         }
 
         // POST api/<FinanceController>
-
         [HttpPost]
+        [Authorize(Policy = "user")]
         public ActionResult<UserDto> Post([FromBody] UserLoginModel data)
         {
             var user = _context.Find(data.email);
@@ -45,19 +47,27 @@ namespace my_fin_app.Controllers
             return user;
         }
 
-        // PUT api/<FinanceUserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value) { }
+        [HttpPost("update")]
+        [Authorize(Policy = "user")]
+        public ActionResult<UserDto> Post([FromBody] UpdateUserModel data)
+        {
+            var user = _context.Update(data);
+            if (user == null)
+            {
+                return BadRequest();
+            }
 
-        // DELETE api/<FinanceUserController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) { }
+            return user;
+        }
     }
 }
 
 public interface IFinanceService
 {
     UserDto Find(String email);
+    UserDto Update(UpdateUserModel user);
+    UserDto UserToDTO(User user);
+    List<FixedOutgoingsMonthly> FindAllOutgoings(String email, int page);
 }
 
 public class FinanceService : IFinanceService
@@ -76,17 +86,54 @@ public class FinanceService : IFinanceService
         {
             return null;
         }
-        UserDto user = new UserDto
+
+        return UserToDTO(userData);
+    }
+
+    public UserDto Update(UpdateUserModel user)
+    {
+        Console.WriteLine(user);
+        var userData = _context.Users.Where(u => u.Email == user.email).FirstOrDefault();
+        if (userData == null)
         {
-            Email = userData!.Email,
-            MonthlySalary = userData.MonthlySalary,
-            Username = userData.Username,
-            Currency = userData.Currency,
-            Phone = userData.Phone,
-            SavingsTarget = userData.SavingsTarget,
-            SavingsRate = userData.SavingsRate,
-            CurrentSavings = userData.CurrentSavings
+            return null;
+        }
+        userData.MonthlySalary = (int)user.monthlySalary!;
+        userData.Currency = user.currency;
+        userData.Phone = user.phone;
+        userData.SavingsTarget = user.savingsTarget;
+        userData.SavingsRate = user.savingsRate;
+        userData.CurrentSavings = user.currentSavings;
+        _context.SaveChanges();
+        return UserToDTO(userData);
+    }
+
+    public UserDto UserToDTO(User user)
+    {
+        return new UserDto
+        {
+            Email = user.Email,
+            MonthlySalary = user.MonthlySalary,
+            Username = user.Username,
+            Currency = user.Currency,
+            Phone = user.Phone,
+            SavingsTarget = user.SavingsTarget,
+            SavingsRate = user.SavingsRate,
+            CurrentSavings = user.CurrentSavings
         };
-        return user;
+    }
+
+    public List<FixedOutgoingsMonthly> FindAllOutgoings(String email, int page)
+    {
+        var userId = _context.Users.Where(u => u.Email == email).First().Id;
+        int skip = (page - 1) * 10;
+        var outgoings = _context.FixedOutgoingsMonthlies
+            .Where(u => u.UserId == userId)
+            .OrderByDescending(u => u.CreatedAt)
+            .Skip(skip)
+            .Take(10)
+            .ToList();
+
+        return outgoings;
     }
 }

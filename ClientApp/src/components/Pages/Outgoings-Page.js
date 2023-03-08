@@ -1,14 +1,12 @@
-import { Fragment, useContext, useEffect, useState } from 'react';
-
-import LoadingCircle from '../Loading/loading-circle';
-import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 import { currentUserContext } from '../../hooks/UserContext';
-import ProfilePage from '../Profile/Profile-Page';
-
-export default function Profile() {
-  const navigate = useNavigate();
+import { Fragment, useEffect, useState, useContext } from 'react';
+import LoadingCircle from '../Loading/loading-circle';
+import OutgoingsBody from '../outgoings/Outgoings-Body';
+import { useNavigate } from 'react-router-dom';
+function Outgoings() {
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
   const { currentUser } = useContext(currentUserContext);
 
   const checkUser = () => {
@@ -26,15 +24,17 @@ export default function Profile() {
     }, 300);
     return () => clearTimeout(timer);
   }, [currentUser]);
+
   return (
     <Fragment>
       {isLoading && (
         <div className='h-full w-full flex justify-center items-center'>
-          {' '}
           <LoadingCircle />{' '}
         </div>
       )}
-      {!isLoading && <ProfilePage currentUser={currentUser} />}
+      {!isLoading && <OutgoingsBody />}
     </Fragment>
   );
 }
+
+export default Outgoings;

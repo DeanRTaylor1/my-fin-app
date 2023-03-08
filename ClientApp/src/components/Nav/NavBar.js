@@ -11,7 +11,7 @@ import AuthItems from './Auth-Items';
 import ProfileMenu from './Profile-Menu';
 
 const Navbar = () => {
-  const { currentUser, setCurrentUser } = useContext(currentUserContext);
+  const { currentUser } = useContext(currentUserContext);
   console.log(currentUser);
   const [scale, setScale] = useState('scale-0');
   const [profileScale, setProfileScale] = useState('-right-96');

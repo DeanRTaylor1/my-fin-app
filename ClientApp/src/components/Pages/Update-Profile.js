@@ -1,12 +1,10 @@
-import { Fragment, useContext, useEffect, useState } from 'react';
-
-import LoadingCircle from '../Loading/loading-circle';
+import { Fragment, useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { currentUserContext } from '../../hooks/UserContext';
-import ProfilePage from '../Profile/Profile-Page';
+import LoadingCircle from '../Loading/loading-circle';
+import UpdateProfile from '../Profile/Update-Profile';
 
-export default function Profile() {
+export default function UpdateProfilePage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useContext(currentUserContext);
@@ -26,6 +24,7 @@ export default function Profile() {
     }, 300);
     return () => clearTimeout(timer);
   }, [currentUser]);
+
   return (
     <Fragment>
       {isLoading && (
@@ -34,7 +33,7 @@ export default function Profile() {
           <LoadingCircle />{' '}
         </div>
       )}
-      {!isLoading && <ProfilePage currentUser={currentUser} />}
+      {!isLoading && <UpdateProfile currentUser={currentUser} />}
     </Fragment>
   );
 }

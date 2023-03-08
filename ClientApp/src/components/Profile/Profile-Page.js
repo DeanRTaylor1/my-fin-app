@@ -49,7 +49,7 @@ const ProfilePage = () => {
         };
         results.push(temp);
       }
-      // console.log(results)
+      console.log(results);
       setUserData(results);
     } catch (err) {
       console.log(err);
@@ -127,7 +127,7 @@ const ProfilePage = () => {
             })}
 
         {!isLoading && (
-          <NavLink className={'navLink'} to='/user/profile/update'>
+          <NavLink className={'navLink'} to='/profile/update'>
             {' '}
             <button className='signInButton'>Update Details</button>{' '}
           </NavLink>
